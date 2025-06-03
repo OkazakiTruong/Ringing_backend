@@ -1,14 +1,10 @@
 import express from 'express';
-
+import router from './routes';
 const app = express();
 
 app.use(express.json());
 
 // Routes
-app.use('/', (req, res): any => {
-  return res.send('Hello');
-});
-
-// Global error handler (should be after routes)
+app.use('/ringing-v1', router);
 
 export default app;
