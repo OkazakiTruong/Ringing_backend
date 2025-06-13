@@ -1,20 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { ObjectSchema } from 'joi';
+import asyncHandler from '../utils/asyncHandler.util';
 
 export const validate = (schema: ObjectSchema): any => {
-  return async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<any> => {
-    try {
-      await schema.validateAsync(req.body);
-      next();
-    } catch (error: any) {
-      return res.status(400).json({
-        message: 'Invalid data',
-        details: error.details?.map((d: any) => d.message),
-      });
-    }
-  };
-};
+  return asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    await schema.validateAsync(req.body); // Joi sẽ tự throw error
+    next(); // Chỉ chạy khi validation thành công
+  });
+}
