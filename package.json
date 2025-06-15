@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --watch src/**/*.ts --exec ts-node src/server.ts",
+    "dev": "nodemon --legacy-watch --ext ts --watch src --exec ts-node src/server.ts",
     "lint": "eslint 'src/**/*.ts'"
   },
   "keywords": [],
@@ -15,12 +15,17 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/nodemailer": "^6.4.17",
     "bcrypt": "^6.0.0",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "joi": "^17.13.3",
     "mongodb": "^6.17.0",
-    "mongoose": "^8.15.1"
+    "mongoose": "^8.15.1",
+    "nodemailer": "^7.0.3",
+    "redis": "^5.5.6"
   },
   "devDependencies": {
     "@types/express": "^5.0.2",

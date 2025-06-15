@@ -1,15 +1,28 @@
 import dotenv from "dotenv";
+import { envSchema } from "../consts/validate.const";
 
 dotenv.config();
 
-interface Config {
-  port: number;
-  nodeEnv: string;
+const { error, value: envVars } = envSchema.validate(process.env, {
+  abortEarly: false
+});
+
+
+if (error) {
+  console.error('❌ ENV Validation Error:', error.details);
+  process.exit(1);
 }
 
-const config: Config = {
-  port: Number(process.env.PORT) || 3000,
-  nodeEnv: process.env.NODE_ENV || "development",
+const config = {
+  port: Number(envVars.PORT),
+  nodeEnv: envVars.NODE_ENV,
+  mongoUri: envVars.MONGO_URI,
+  emailUser: envVars.EMAIL_USER,
+  emailPassword: envVars.EMAIL_PASS,
+  redisEnpoint: envVars.REDIS_ENDPOINT,
+  redisPort: envVars.REDIS_PORT,
+  redisUserName: envVars.REDIS_USERNAME,
+  redisPassword: envVars.REDIS_PASSWORD,
 };
 
 export default config;

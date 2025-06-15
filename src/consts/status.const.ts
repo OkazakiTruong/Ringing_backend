@@ -31,5 +31,11 @@ const STATUS_CODE = {
     SERVICE_UNAVAILABLE: 503,
     GATEWAY_TIMEOUT: 504
 };
-
-export default STATUS_CODE
+const STATUS = {
+    FAIL: 'fail',
+    ERROR: 'error',
+}
+export {
+STATUS_CODE,
+STATUS
+}

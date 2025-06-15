@@ -9,7 +9,8 @@ const RETURN_MESSAGE = {
         CREATE: "User is created successfully!",
     },
     COMMON: {
-        SERVER_ERROR: "Server err! Just wait......me fix! 👌"
+        SERVER_ERROR: "Server err! Just wait......me fix! 👌",
+        SUCCESS: "success"
     }
 }
 
