@@ -34,7 +34,7 @@ export const getCodeRegisterEmailHtml = (code: string, name: string) => {
         </head>
         <body>
             <div class="container">
-            <h2>Hello,</h2>
+            <h2>Hello, ${name}</h2>
             <p>You requested a register code. Your code is:</p>
             <div class="code ringing-code-register">${code}</div>
             <p>Code will be expired in 10 minutes, please don't share this code!</p>
