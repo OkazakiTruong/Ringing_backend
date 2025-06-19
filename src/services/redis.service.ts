@@ -1,43 +1,18 @@
-import { IRegisterUser } from "../interfaces/user.interface";
-import { createClient } from "redis";
-import config from "../config/config";
+import redisClient from '../config/redis';
 
-class RedisService {
-    redisClient:any
-    constructor(){
-        this.connectToServer()
-    }
-    async connectToServer(){
-        this.redisClient = await createClient({
-            username: config.redisUserName,
-            password: config.redisPassword,
-            socket: {
-                host: config.redisEnpoint,
-                port: config.redisPort
-            }
-        });
-        
-        this.redisClient.on('error', (err:any) => console.log('Redis Client Error', err))
-    }
+class RedisServices {
+  async setData(key: string, value: any, expire: number = 60) {
+    await Promise.all([
+      redisClient.hSet(key, value),
+      redisClient.expire(key, expire),
+    ]);
+  }
 
-    async createRegisterSection (registerData: IRegisterUser, code: string) {
-        const birthDate = new Date(registerData.birthDay); 
-        await this.redisClient.hSet(`register-section:${code}`, {
-            name: registerData.name,
-            email: registerData.email,
-            birthDay: birthDate.toISOString(),
-            phone: registerData.phone,
-            password: registerData.password,
-        })
-        await this.redisClient.expire(`register-section:${registerData.email}`,600)
-        this.redisClient.destroy()
-    }
-
-    async getData (datakey: string) {
-        const value = await this.redisClient.get(datakey);
-        this.redisClient.destroy();
-        return value;
-    }
+  async getData(key: string) {
+    let dataSection = await redisClient.hGetAll(key);
+    return dataSection;
+  }
 }
 
-export default RedisService
+const redisService = new RedisServices();
+export default redisService;

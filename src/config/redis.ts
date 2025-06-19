@@ -28,4 +28,7 @@ export const connectRedis = async () => {
   }
 };
 
+export const disconnectRedis = async () => {
+  await redisClient.close();
+}
 export default redisClient;

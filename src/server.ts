@@ -1,8 +1,7 @@
 import app from './app';
 import config from './config/config';
 import { connectDB } from './config/db';
-import { connectRedis, disconnectRedis } from './config/redis'; // 👈 nhớ export hàm disconnectRedis
-
+import { connectRedis, disconnectRedis } from './config/redis';
 async function startServer() {
   try {
     await connectDB();
