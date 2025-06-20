@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from '../utils/asyncHandler.util';
-import { IRegisterUser } from '../interfaces/user.interface';
+import {
+  ILoginUser,
+  IRegisterUser,
+  IUserData,
+} from '../interfaces/user.interface';
 import userService from '../services/user.service';
 import AppError from '../utils/appError.util';
 import { STATUS_CODE } from '../consts/status.const';
@@ -11,10 +15,67 @@ import { getCodeRegisterEmailHtml } from '../assets/emailHtml/emailHtmlForm';
 import config from '../config/config';
 import { generateOTP } from '../utils/crypto.util';
 import redisService from '../services/redis.service';
-import { hashAPassword } from '../utils/bycript.util';
+import { comparePassword, hashAPassword } from '../utils/bycript.util';
+import { omit } from '../utils/common.util';
+import jwtService from '../services/jwt.service';
 
 class AuthController {
-  async login() {}
+  login = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const loginData: ILoginUser = req.body;
+      //check user exist
+      const foundUser: IUserData | null = await userService.getUserByEmail(
+        loginData.email,
+      );
+      if (!foundUser) {
+        return next(
+          new AppError(
+            RETURN_MESSAGE.AUTH.SIGN_IN_ERROR,
+            STATUS_CODE.BAD_REQUEST,
+          ),
+        );
+      }
+
+      if (!foundUser.password) {
+        return next(
+          new AppError(
+            RETURN_MESSAGE.AUTH.SIGN_IN_ERROR,
+            STATUS_CODE.BAD_REQUEST,
+          ),
+        );
+      }
+
+      const isCorrectPassword = comparePassword(
+        foundUser.password,
+        loginData.password,
+      );
+
+      if (!isCorrectPassword) {
+        return next(
+          new AppError(
+            RETURN_MESSAGE.AUTH.SIGN_IN_ERROR,
+            STATUS_CODE.BAD_REQUEST,
+          ),
+        );
+      }
+      const dataUserForJwt = omit(foundUser, 'password');
+      const token = jwtService.generateToken(dataUserForJwt);
+      const refreshToken = jwtService.generateRefeshToken(dataUserForJwt);
+
+      res.cookie('refresh-token', refreshToken, {
+        httpOnly: true,
+        secure: config.nodeEnv !== 'development' ? true : false,
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 15 * 1000,
+      });
+
+      return res.status(STATUS_CODE.OK).json({
+        message: RETURN_MESSAGE.AUTH.SIGN_IN_SUCCESS,
+        data: token,
+      });
+    },
+  );
+
   register = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const registerData: IRegisterUser = req.body;
@@ -59,6 +120,7 @@ class AuthController {
         .json({ message: RETURN_MESSAGE.COMMON.SUCCESS });
     },
   );
+
   verifyCode = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const { code } = req.body;
@@ -81,6 +143,22 @@ class AuthController {
         .status(STATUS_CODE.OK)
         .json({ message: RETURN_MESSAGE.AUTH.REGISTER_SUCCESS });
     },
+  );
+
+  changePassword = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {},
+  );
+
+  forgotPassword = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {},
+  );
+
+  verifyEmailforgotPasswod = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {},
+  );
+
+  resetPassword = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {},
   );
 }
 

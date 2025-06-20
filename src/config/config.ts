@@ -1,12 +1,11 @@
-import dotenv from "dotenv";
-import { envSchema } from "../consts/validate.const";
+import dotenv from 'dotenv';
+import { envSchema } from '../consts/validate.const';
 
 dotenv.config();
 
 const { error, value: envVars } = envSchema.validate(process.env, {
-  abortEarly: false
+  abortEarly: false,
 });
-
 
 if (error) {
   console.error('❌ ENV Validation Error:', error.details);
@@ -23,6 +22,8 @@ const config = {
   redisPort: envVars.REDIS_PORT,
   redisUserName: envVars.REDIS_USERNAME,
   redisPassword: envVars.REDIS_PASSWORD,
+  jwtSecret: envVars.JWT_SECRET,
+  jwtRefreshSecret: envVars.JWT_REFRESH_SECRET,
 };
 
 export default config;

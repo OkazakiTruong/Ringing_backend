@@ -5,6 +5,8 @@ const RETURN_MESSAGE = {
     REGISTER_SUCCESS: 'Register successfully!',
     SIGN_IN_SUCCESS: 'Sign in successfully!',
     VERIFY_CODE_FAIL: 'Verify code fail!',
+    AUTHENTICATION_FAIL: 'Authenticate error!',
+    AUTHORIZATION_FAIL: 'Authorization error!',
   },
   USER: {
     CREATE: 'User is created successfully!',
