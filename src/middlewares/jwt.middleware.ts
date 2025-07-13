@@ -19,13 +19,15 @@ export const jwtMiddleware = asyncHandler(
       );
 
     const decodeAccess = jwtService.verifyToken(accessToken);
-    if (decodeAccess) return next();
+    if (!decodeAccess)
+      return next(
+        new AppError(
+          RETURN_MESSAGE.AUTH.AUTHENTICATION_FAIL,
+          STATUS_CODE.UNAUTHORIZED,
+        ),
+      );
 
-    return next(
-      new AppError(
-        RETURN_MESSAGE.AUTH.AUTHENTICATION_FAIL,
-        STATUS_CODE.UNAUTHORIZED,
-      ),
-    );
+    req.body.userData = decodeAccess;
+    return next();
   },
 );

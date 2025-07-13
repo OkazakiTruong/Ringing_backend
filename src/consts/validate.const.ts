@@ -17,8 +17,8 @@ export const envSchema = Joi.object({
 }).unknown();
 
 export const authSchema = Joi.object({
-  email: Joi.string().email().required(),
   name: Joi.string().required(),
+  email: Joi.string().email().required(),
   birthDay: Joi.date().required(),
   phone: Joi.number().required(),
   password: Joi.string().required(),
@@ -27,4 +27,9 @@ export const authSchema = Joi.object({
 export const loginSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
+});
+
+export const changePasswordSchema = Joi.object({
+  oldPassword: Joi.string().required(),
+  newPassword: Joi.string().required(),
 });

@@ -7,6 +7,8 @@ const RETURN_MESSAGE = {
     VERIFY_CODE_FAIL: 'Verify code fail!',
     AUTHENTICATION_FAIL: 'Authenticate error!',
     AUTHORIZATION_FAIL: 'Authorization error!',
+    CHANGE_PASSWORD_FAIL: 'Change password failed!',
+    CHANGE_PASSWORD_SUCCES: 'Change password success!',
   },
   USER: {
     CREATE: 'User is created successfully!',

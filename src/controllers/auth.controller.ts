@@ -146,7 +146,45 @@ class AuthController {
   );
 
   changePassword = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {},
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { newPassword, oldPassword, userData } = req.body;
+      const foundUser: IUserData | null = await userService.getUserByEmail(
+        userData.email,
+      );
+      if (!foundUser)
+        return next(
+          new AppError(
+            RETURN_MESSAGE.AUTH.CHANGE_PASSWORD_FAIL,
+            STATUS_CODE.BAD_REQUEST,
+          ),
+        );
+
+      const checkOldPassword = comparePassword(
+        oldPassword,
+        foundUser?.password || '',
+      );
+
+      if (!checkOldPassword)
+        return next(
+          new AppError(
+            RETURN_MESSAGE.AUTH.CHANGE_PASSWORD_FAIL,
+            STATUS_CODE.BAD_REQUEST,
+          ),
+        );
+
+      const filter = {
+        email: userData.email,
+      };
+
+      const hashPassword = hashAPassword(newPassword);
+      const updateData = {
+        password: hashPassword,
+      };
+      await userService.updateUserData(filter, updateData);
+      return res.status(STATUS_CODE.OK).json({
+        message: RETURN_MESSAGE.AUTH.CHANGE_PASSWORD_SUCCES,
+      });
+    },
   );
 
   forgotPassword = asyncHandler(

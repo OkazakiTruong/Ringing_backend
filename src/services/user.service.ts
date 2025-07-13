@@ -21,6 +21,9 @@ class UserService {
   async createNewUser(userData: IRegisterUser) {
     await UserModel.create(userData);
   }
+  async updateUserData(filter: any, data: any) {
+    await UserModel.findByIdAndUpdate(filter, data);
+  }
 }
 
 const userService = new UserService();

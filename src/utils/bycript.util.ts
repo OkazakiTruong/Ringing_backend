@@ -9,5 +9,6 @@ export function hashAPassword(password: string) {
 }
 
 export function comparePassword(hashPassword: string, comparePassword: string) {
+  if (!hashAPassword || !comparePassword) return false;
   return bcrypt.compareSync(comparePassword, hashPassword);
 }
